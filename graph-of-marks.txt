@@ -1,0 +1,591 @@
+	LDA	OPEN	//puts(open); 
+	BSA	PUTS	//
+Getmrk,	LDA	ASTART	//DO
+	STA	APTR	//
+	BSA	SCANF	//
+	STA	MARK	//	mark=scanf();
+	CLA		//
+	STA	I	//	i=0;
+Insert,	LDA	MIN10	//
+	ADD	I	//
+	SNA		//	while(i-10<0)
+	BUN	If100	//	DO
+	LDA	I	//
+	BSA	MLT10	//
+	CMA		//
+	INC		//
+	ADD	MIN9	//
+	STA	TEMP	//		-temp=(i*10)+9
+	ADD	MARK	//
+	SNA		//		IF(mark<=temp)
+	BUN	BigI	//		Then
+	ISZ	APTR I	//			graph[i]++;
+	BUN	CalSum	//			goto calsum
+BigI,	ISZ	APTR	//		FI
+	ISZ	I	//		i++;
+	BUN	Insert	//	OD
+If100,	LDA	MARK	//
+	ADD	M100	//
+	SZA		//	IF (mark==100)
+	BUN	CalSum	//	Then
+	LDA	APTR	//
+	CMA		//
+	INC		//
+	CMA		//		graph[--i]++;
+	STA	APTR	//	FI
+	ISZ	APTR I	//
+CalSum,	ISZ	SIZE	//	size++;
+	LDA	SUM	//
+	ADD	MARK	//
+	STA	SUM	//	sum+=mark;
+CalMax,	LDA	MAX	//
+	CMA		//
+	INC		//
+	ADD	MARK	//
+	SPA		//	IF (mark>max)
+	BUN	CalMin	//	Then
+	LDA	MARK	//		max=mark;
+	STA	MAX	//	FI
+CalMin,	LDA	MIN	//
+	CMA		//
+	INC		//
+	ADD	MARK	//
+	SNA		//	IF (mark<min)
+	BUN	EndIns	//	Then
+	LDA	MARK	//		min=mark;
+	STA	MIN	//	FI
+EndIns,	BSA	Pop_AC	//
+	ADD	MINCR	//	cc=pop_ac();
+	SZA		//OD
+	BUN	Getmrk	//while (cc!='\n');
+CalAvr,	LDA	SIZE	//
+	CMA		//
+	INC		//
+	ADD	SUM	//
+	SNA		//while(sum-size>=0)
+	BUN	BigAvr	//DO
+	BUN	Cntinu	//
+BigAvr,	STA	SUM	//	sum-=size;
+	ISZ	AVERAGE	//	average++;
+	BUN	CalAvr	//OD
+Cntinu,	LDA	SIZE	//
+	STA	MINI	//mini=size; 
+	LDA	ASTART	//
+	STA	APTR	//
+	CLA		//
+	STA	I	//i=0;
+CalIn,	LDA	MIN10	//
+	ADD	I	//
+	SNA		//while(i<10)
+	BUN	ClTmp	//DO
+	LDA	MAXI	//
+	CMA		//
+	INC		//
+	ADD	APTR I	//
+	SPA		//	IF (graph[i]>maxi)
+	BUN	ClMini	//	Then
+	LDA	APTR I	//		maxi = graph[i];
+	STA	MAXI	//	FI
+ClMini,	LDA	MINI	//
+	CMA		//
+	INC		//
+	ADD	APTR I	//
+	SNA		//	IF (graph[i]<min)
+	BUN	BigI2	//	Then
+	LDA	APTR I	//		mini = graph[i];
+	STA	MINI	//	FI
+BigI2,	ISZ	I	//	i++;
+	ISZ	APTR	//OD
+	BUN	CalIn	//
+ClTmp,	LDA	MAXI	//
+	CMA		//
+	INC		//
+	ADD	MINI	//
+	STA	TEMP	//temp=mini-maxi;
+CalUn,	LDA	TEMP	//
+	ADD	FREQ	//
+	SNA		//while(freq+temp>=0)
+	BUN	BigUn	//DO
+	BUN	PrRes	//
+BigUn,	STA	FREQ	//	freq+=temp;
+	ISZ	UNIT	//	unit++;
+	BUN	CalUn	//OD
+PrRes,	LDA	TOTA	//
+	BSA	PUTS	//puts(tota);
+	LDA	SIZE	//
+	BSA	PRINTF	//printnum(size);
+	LDA	INTER	//
+	BSA	PUTS	//puts(inter);
+	CLA		//
+	STA	I	//i=0;
+	LDA	UNIT	//
+	CMA		//
+	INC		//
+	STA	MUNIT	//
+PrUnit,	LDA	MAXI	//
+	CMA		//
+	INC		//
+	ADD	I	//
+	SNA		//while(i<maxi)
+	BUN	ContPr	//DO
+	LDA	KAV	//
+	BSA	PRINT	//	print('|');
+	CLA		//
+	STA	J	//	j=0;
+PrMx,	LDA	MUNIT	//
+	ADD	J	//
+	SNA		//	while(j<unit)
+	BUN	BigI3	//	DO
+	LDA	MINUS	//
+	BSA	PRINT	//		print('-');
+	ISZ	J	//		j++;
+	BUN	PrMx	//	OD
+BigI3,	ISZ	I	//	i++;
+	BUN	PrUnit	//OD
+ContPr,	LDA	KAV	//
+	BSA	PRINT	//print('|');
+	LDA	ENTER	//
+	BSA	PRINT	//print('\n');
+	LDA	ASTART	//
+	STA	APTR	//
+	CLA		//
+	STA	I	//
+PrIntr,	LDA	I	//i=0;
+	ADD	MIN10	//
+	SNA		//while(i<10)
+	BUN	PrAvr	//DO
+	LDA	I	//
+	BSA	MLT10	//
+	STA	TEMP	//	temp=i*10;
+	BSA	PRINTF	//	printnum(temp);
+	LDA	MINUS	//
+	BSA	PRINT	//	print('-');
+	LDA	TEMP	//
+	ADD	NINE	//
+	BSA	PRINTF	//	printf(temp+9);
+	LDA	COLON	//
+	BSA	PRINT	//	print(':');
+	LDA	NINE	//
+	BSA	PRINT	//	print('\t');
+	LDA	APTR I	//
+	BSA	PRINTF	//	printf(graph[i]);
+	LDA	NINE	//
+	BSA	PRINT	//	print('|');
+	LDA	KAV	//
+	BSA	PRINT	//
+	CLA		//
+	STA	J	//	j=0;
+PrGrph,	LDA	APTR I	//
+	CMA		//
+	INC		//
+	ADD	J	//
+	SNA		//	while(j<unit)
+	BUN	PrStar	//	DO
+	CLA		//
+	STA	K	//		k=0;
+PrUnT,	LDA	MUNIT	//
+	ADD	K	//
+	SNA		//		while(k<unit)
+	BUN	BigJ	//		DO
+	LDA	MINUS	//
+	BSA	PRINT	//			print('-');
+	ISZ	K	//			k++;
+	BUN	PrUnT	//		OD
+BigJ,	ISZ	J	//		j++;
+	BUN	PrGrph	//	OD
+PrStar,	LDA	J	//
+	SPA		//	IF(k>0)
+	BUN	BigI4	//	Then
+	LDA	STAR	//		print('*');	
+	BSA	PRINT	//	FI
+BigI4,	LDA	ENTER	//
+	BSA	PRINT	//	print('\n');
+	ISZ	I	//	i++;
+	ISZ	APTR	//OD
+	BUN	PrIntr	//
+PrAvr,	LDA	MAXX	//
+	BSA	PUTS	//puts(maxx);
+	LDA	MAX	//
+	BSA	PRINTF	//printf(max);
+	LDA	MINN	//
+	BSA	PUTS	//puts(minn);
+	LDA	MIN	//
+	BSA	PRINTF	//printf(min);
+	LDA	AVRR	//
+	BSA	PUTS	//puts(avrr);
+	LDA	AVERAGE	//
+	BSA	PRINTF	//prinf(average);
+END,	HLT		//
+//DATA
+ASTART,	HEX	110	//
+APTR,	HEX	0	//
+OPEN,	HEX	150	//open[]
+TOTA,	HEX	200	//tota[]
+INTER,	HEX	250	//inter[]
+MAXX,	HEX	300	//maxx[]
+MINN,	HEX	350	//min[]
+AVRR,	HEX	400	//avrr[]
+MARK,	HEX	0	//
+SUM,	HEX	0	//
+SIZE,	HEX	0	//
+MAX,	HEX	0	//
+MIN,	DEC	100	//
+AVERAGE, HEX	0	//
+MAXI,	HEX	0	//maximum of graph
+MINI,	HEX	0	//minimum of graph
+UNIT,	HEX	0	//
+FREQ,	DEC	40	//
+MIN10,	DEC	-10	//
+MIN9,	DEC	-9	//
+MUNIT,	HEX	0	//
+M100,	DEC	-100	//
+TEMP,	HEX	0	//
+I,	HEX	0	//
+J,	HEX	0	//
+K,	HEX	0	//
+KAV,	HEX	7C	//'|'
+ENTER,	HEX	D	//'\n'
+MINUS,	HEX	2D	//'-'
+NINE,	HEX	9	//'\t'
+COLON,	HEX	3A	//':'
+STAR,	HEX	2A	//'*'
+
+	ORG	110	
+GRAPH,	HEX	0	//graph[10]
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+
+	ORG	150	//
+STRING,	HEX	50	//"PLEASE"
+	HEX	4C	//
+	HEX	45	//
+	HEX	41	//
+	HEX	53	//
+	HEX	45	//
+	HEX	20	//
+	HEX	54	//"TYPE"
+	HEX	59	//
+	HEX	50	//
+	HEX	45	//
+	HEX	20	//
+	HEX	4D	//"MARKS"
+	HEX	41	//
+	HEX	52	//
+	HEX	4B	//
+	HEX	53	//
+	HEX	20	//
+	HEX	42	//"BETWEEN"
+	HEX	45	//
+	HEX	54	//
+	HEX	57	//
+	HEX	45	//
+	HEX	45	//
+	HEX	4E	//
+	HEX	20	//
+	HEX	30	//"0-100"
+	HEX	2D	//
+	HEX	31	//
+	HEX	30	//
+	HEX	30	//
+	HEX	20	//
+	HEX	57	//"WITH"
+	HEX	49	//
+	HEX	54	//
+	HEX	48	//
+	HEX	20	//
+	HEX	53	//"SPACE"
+	HEX	50	//
+	HEX	41	//
+	HEX	43	//
+	HEX	45	//
+	HEX	20	//
+	HEX	41	//"AFTER"
+	HEX	46	//
+	HEX	54	//
+	HEX	45	//
+	HEX	52	//
+	HEX	20	//
+	HEX	45	//"EACH,"
+	HEX	41	//
+	HEX	43	//
+	HEX	48	//
+	HEX	2C	//
+	HEX	20	//
+	HEX	45	//"ENTER"
+	HEX	4E	//
+	HEX	54	//
+	HEX	45	//
+	HEX	52	//
+	HEX	20	//
+	HEX	54	//"TO"
+	HEX	4F	//
+	HEX	20	//
+	HEX	45	//"END"
+	HEX	4E	//
+	HEX	44	//
+	HEX	D	//
+	HEX	FFFF	//END
+
+	ORG	200
+Total,	HEX	54	//"Total:\t"
+	HEX	6F	//
+	HEX	74	//
+	HEX	61	//
+	HEX	6C	//
+	HEX	3A	//
+	HEX	9	//
+	HEX	FFFF	//
+
+	ORG	250
+Intrvl,	HEX	D	//"\nInterval:\t|"
+	HEX	49	//
+	HEX	6E	//
+	HEX	74	//
+	HEX	65	//
+	HEX	72	//
+	HEX	76	//
+	HEX	61	//
+	HEX	6C	//
+	HEX	3A	//
+	HEX	9	//
+	HEX	7C	//
+	HEX	46	//"Freq\n\t\t"
+	HEX	72	//
+	HEX	65	//
+	HEX	71	//
+	HEX	D	//
+	HEX	9	//
+	HEX	9	//
+	HEX	FFFF	//
+
+	ORG	300
+HMAX,	HEX	D	//
+	HEX	4D	//"Max"
+	HEX	61	//
+	HEX	78	//
+	HEX	20	//
+	HEX	3D	//"="
+	HEX	20	//
+	HEX	FFFF	//
+
+	ORG	350
+HMIN,	HEX	D	//
+	HEX	4D	//"Min"
+	HEX	69	//
+	HEX	6E	//
+	HEX	20	//
+	HEX	3D	//
+	HEX	20	//
+	HEX	FFFF	//
+
+	ORG	400
+HAVR,	HEX	D	//
+	HEX	41	//"Average"
+	HEX	76	//
+	HEX	65	//
+	HEX	72	//
+	HEX	61	//
+	HEX	67	//
+	HEX	65	//
+	HEX	20	//
+	HEX	3D	//"="
+	HEX	20	//
+	HEX	FFFF	//
+
+	ORG	500
+SCANF,	HEX	0	//
+	CLA		//
+	STA	NUM	//num=0;
+GetCC,	BSA	InChr	//
+	STA	CC	//cc=getchar();
+	ADD	MINCR	//DO
+	SZA		//IF(cc=='\n' || cc==32)
+	BUN	IfSpac	//Then
+	BUN	PushCC	//
+IfSpac,	LDA	CC	//
+	ADD	MSpace	//
+	SZA		//
+	BUN	IfLow	//
+PushCC,	LDA	CC	//	push_ac(cc);
+	BSA	Push_AC	//	goto RetNum;
+	BUN	IfNmRt	//ELSE
+IfLow,	LDA	CC	//
+	ADD	MIN48	//
+	SNA		//	IF (cc>'9' || cc<'0')
+	BUN	IfHigh	//	Then
+	BSA	EROR	//		eror();
+	BUN	GetCC	//
+IfHigh,	LDA	CC	//
+	ADD	MIN57	//
+	SPA		//
+	BUN	GetNum	//
+	BSA	EROR	//	ELSE
+	BUN	GetCC	//	
+GetNum,	LDA	NUM	//
+	BSA	MLT10	//
+	ADD	CC	//
+	ADD	MIN48	//
+	STA	NUM	//		num=(mlt10(num))+cc-'0';
+	BUN	GetCC	//	FI
+IfNmRt,	LDA	NUM	//
+	ADD	MIN100	//
+	SPA		//	IF (num>100)
+	BUN	RetNum	//	Then
+	CLA		//		num=0;
+	STA	NUM	//		eror();
+	BSA	EROR	//	FI
+	BUN	GetCC	//	goto GetCC;
+RetNum,	LDA	NUM	//FI
+	BUN	SCANF I	//return num;
+//LOCAL DATA
+NUM,	HEX	0	//
+CC,	HEX	0	//
+MINCR,	DEC	-13	//
+MSpace,	DEC	-32	//
+MIN100,	DEC	-100	//
+MIN48,	DEC	-48	//
+MIN57,	DEC	-57	//
+
+	ORG	600	
+InChr,	HEX	0	//
+CIN,	SKI		//
+	BUN	CIN	//
+	INP		//getchar();
+COUT,	SKO		//
+	BUN	COUT	//
+	OUT		//putchar(a);
+	BUN	InChr I	//
+	
+	ORG	700	
+MLT10,	HEX	0	//
+	CLE		//
+	STA	NUMB	//a=a*10;
+	CIL		//
+	CIL		//
+	CIL		//
+	ADD	NUMB	//
+	ADD	NUMB	//
+	BUN	MLT10 I	//return a;
+//LOCAL DATA
+NUMB,	HEX	0	//
+
+	ORG	800	
+EROR,	HEX	0	//
+	LDA	ASTR1	//Eror[]
+	BSA	PUTS	//puts(Eror);
+	BUN	EROR I	//
+//LOCAL DATA	
+ASTR1,	HEX	900	//
+	ORG	900	
+StrEr,	HEX	45	//Eror!! Try Again..\n
+	HEX	72	//
+	HEX	6F	//
+	HEX	72	//
+	HEX	21	//
+	HEX	21	//
+	HEX	20	//
+	HEX	54	//
+	HEX	72	//
+	HEX	79	//
+	HEX	20	//
+	HEX	41	//
+	HEX	67	//
+	HEX	61	//
+	HEX	69	//
+	HEX	6E	//
+	HEX	2E	//
+	HEX	2E	//
+	HEX	D	//
+	HEX	FFFF	//
+
+	ORG	A00	
+PRINT,	HEX	0	//
+C_out,	SKO		//
+	BUN	C_out	//
+	OUT		//putchar(a);
+	BUN	PRINT I	//
+
+	ORG	A50
+Push_AC, HEX	0	//
+	STA	SPTR I	//*aptr=a;
+	ISZ	SPTR	//aptr++;
+	BUN	Push_AC I //
+
+	ORG	B00	//
+Pop_AC,	HEX	0	//
+	LDA	SPTR	//
+	CMA		//
+	INC		//
+	CMA		//
+	STA	SPTR	//aptr--;
+	LDA	SPTR I	//a=*aptr;
+	BUN	Pop_AC I //return a;
+//LOCAL DATA
+SPTR,	HEX	B50	//
+	ORG	B50	//
+STACK,	HEX	0	//
+	HEX	0	//
+	HEX	0	//
+
+	ORG	C00
+PRINTF,	HEX	0	//
+	STA	NUM1	//
+	CLA		//
+	STA	CHAR	//char='0';
+	LDA	Mi100	//
+	ADD	NUM1	//
+	SZA		//IF (num==100)
+	BUN	SizeN	//Then
+	STA	NUM1	//	num=0;
+	LDA	31	//	print('1');
+	BSA	PRINT	//
+	LDA	30	//	print('0');
+	BSA	PRINT	//	goto PrlstN;
+	BUN	PrlstN	//FI
+SizeN,	LDA	M10	//
+	ADD	NUM1	//
+	SNA		//IF (num>10)
+	BUN	Cal10	//Then
+	BUN	PrlstN	//
+Cal10,	LDA	M10	//
+	ADD	NUM1	//
+	SNA		//	while(a>=10)
+	BUN	BigChr	//	DO
+	BUN	Pr10	//		num-=10;
+BigChr,	STA	NUM1	//		char++;
+	ISZ	CHAR	//	OD
+	BUN	Cal10	//
+Pr10,	LDA	CHAR	//
+	ADD	30	//	print(char+'0');
+	BSA	PRINT	//FI
+PrlstN,	LDA	NUM1	//
+	ADD	30	//
+	BSA	PRINT	//print(num-'0');
+	BUN	PRINTF I //
+//local data
+NUM1,	HEX	0	//
+CHAR,	HEX	0	//
+30,	HEX	30	//'0'
+31,	HEX	31	//'1'
+M10,	DEC	-10	//
+Mi100,	DEC	-100	//
+
+	ORG	D00	
+PUTS,	HEX	0	//
+	STA	APTR2	//i=0;
+PrintS,	LDA	APTR2 I	//
+	SPA		//while(a[i]>0)
+	BUN	Eloop	//DO
+	BSA	PRINT	//	print(a[i]);
+	ISZ	APTR2	//	i++;
+	BUN	PrintS	//OD
+Eloop,	BUN	PUTS I	//
+//local data
+APTR2,	HEX	0	//
